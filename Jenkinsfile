@@ -9,6 +9,7 @@ pipeline {
                 '''
             }
         }
+
         stage('Deploy Backend Containers') {
             steps {
                 sh '''
@@ -19,6 +20,7 @@ pipeline {
                 '''
             }
         }
+
         stage('Deploy NGINX Load Balancer') {
             steps {
                 sh '''
@@ -28,13 +30,13 @@ pipeline {
                   --name nginx-lb \
                   --network app-network \
                   -p 80:80 \
+                  -v $(pwd)/nginx/default.conf:/etc/nginx/conf.d/default.conf \
                   nginx
-                
-                docker cp nginx/default.conf nginx-lb:/etc/nginx/conf.d/default.conf
                 '''
             }
         }
     }
+
     post {
         success {
             echo 'Pipeline executed successfully. NGINX load balancer is running.'
